@@ -590,6 +590,8 @@ class Game(Base):
 
   def run_room(self):
     actor = self.current_actor
+    # only report entering_location() on the turn the player arrives
+    self.fresh_location = False
     if actor == self.player or actor.flag('verbose'):
       # if the actor moved, describe the room
       if actor.check_if_moved():
@@ -681,7 +683,7 @@ class Game(Base):
       [actor]
 
     for c in actor.location.contents.values():
-        if isinstance(c, Container) and c.is_open:
+        if isinstance(c, Container) and c.is_open():
           things += c.contents.values()
 
     potential_verbs = []
@@ -797,7 +799,7 @@ class Game(Base):
       if self.done:
           return
       self.run_room()
-      if self.player.health < 0:
+      if self.player.health <= 0:
         self.output ("You have perished! Better luck next time!")
         break
       if self.player.flag('win'):
@@ -1229,7 +1231,7 @@ class Actor(Base):
     t = self.location.contents.pop(noun, None)
     if not t:
       for c in self.location.contents.values():
-        if isinstance(c, Container) and c.is_open:
+        if isinstance(c, Container) and c.is_open():
           t = c.contents.pop(noun, None)
     if t:
       self.inventory[noun] = t
@@ -1271,7 +1273,7 @@ class Actor(Base):
     if noun in self.location.contents:
       n = self.location.contents[noun]
     for c in self.location.contents.values():
-      if isinstance(c, Container) and c.is_open:
+      if isinstance(c, Container) and c.is_open():
         if noun in c.contents:
           n = c.contents[noun]
     if not n:

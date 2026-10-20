@@ -214,7 +214,7 @@ Therefore, he is flawless. ch 71 (g)\"
 """,
 'bees':'The bees are happily flying from flower to flower, ignoring you.',
 'flowers':'There are all sorts of different flowers, in no particular pattern, all growing wild.',
-'trees':'A variety of trees, none of which steam sturdy to climb in.',
+'trees':'A variety of trees, none of which seem sturdy to climb in.',
 'gate':"""
 On the gate is written:
 "The Way of Heaven is like the flexing of a bow.
@@ -504,9 +504,9 @@ The sign says:
 love antiquity, and diligently look there for knowledge. (z)"
 """,
 'librarian':"""The librarian looks very busy, there is no end to her work.""",
-'plastrons':"These are written in a very cold script that you struggle to read.",
-'plastron':"These are written in a very cold script that you struggle to read.",
-'bones':"These are written in a very cold script that you struggle to read.",
+'plastrons':"These are written in a very old script that you struggle to read.",
+'plastron':"These are written in a very old script that you struggle to read.",
+'bones':"These are written in a very old script that you struggle to read.",
 'paper':"The librarian tells you that the library is not open today so leave them alone.",
 'rolls':"The librarian tells you that the library is not open today so leave them alone.",
 'silk':"The librarian tells you that the library is not open today so leave them alone.",
@@ -516,7 +516,7 @@ love antiquity, and diligently look there for knowledge. (z)"
 "The Master said, 'Learn as if you will never catch up, and as if you
 feared losing what you have already attained.' 8.17 (n)"
 """,
-'books':"""Alas, the librarian is very protective of his books and stops you
+'books':"""Alas, the librarian is very protective of her books and stops you
 from going any closer."""}
 
 # ######################################################
@@ -549,11 +549,11 @@ confuciusthree.add_phrase("read scroll",read_scroll)
 
 
 confuciusfour = game.new_location(
-"Hall of Kongzi - Reception Room ",
+"Hall of Kongzi - Reception Room",
 """This building looks like a kind of reception room for guests. There is a short
-table here on the wooden floor. There is a sign here and a scroll hanging from
-the wall. Through an archway to the east you can see a shrine of some kind. There
-is a door to the south, and another archway to the west leading into a garden.
+table here on the wooden floor. There is a sign here, a scroll hanging from
+the wall, and a stone with a carving on it. Through an archway to the east you
+can see a shrine of some kind. There is a door to the south, and another archway to the west leading into a garden.
 """, "in")
 confuciusfour.descriptions = {'sign':"""
 The sign says:
@@ -572,13 +572,15 @@ smoothly glib - these are the harmful types of friendship. 16.4 (w)"
 
 confuciusfour.add_phrase("read sign",read_sign)
 confuciusfour.add_phrase("read scroll",read_scroll)
+confuciusfour.add_phrase("read carving",read_carving)
+confuciusfour.add_phrase("look stone",read_carving)
 
 # ######################################################
 # ## Location: Kongzi 5 Interior Garden
 # ######################################################
 
 confuciusfive = game.new_location(
-"Hall of Kongzi - Interior Garden ",
+"Hall of Kongzi - Interior Garden",
 """This is a beautiful walled garden, perfectly manicured. The garden is like a
 small world in miniature, with tiny hills, pathways, groups of trees looking like
 a forest, and flowering bushes everywhere. There is a path going southwest on a
@@ -621,9 +623,9 @@ confuciusfive.add_phrase("look stone",read_carving)
 # Currently the ink, brush, and paper aren't used for anything
 
 confuciussix = game.new_location(
-"Hall of Kongzi - Study ",
+"Hall of Kongzi - Study",
 """This small room looks like a study of some kind. There is a low table on the
-floor, with some writing supplies on it for writting letters and such. There is
+floor, with some writing supplies on it for writing letters and such. There is
 a sign here and a scroll hanging on the wall. There is a door to the north.
 """, "in")
 confuciussix.descriptions = {'sign':"""
@@ -665,9 +667,9 @@ To be patient even when others do not understand - is this not the mark of
 a gentleman? 1.1 (x)"
 """,
 'ducks':"""The ducks look like a very strange pair together with their very different looking
-plumage, but it is clear that really love each other.""",
+plumage, but it is clear that they really love each other.""",
 'duck':"""The ducks look like a very strange pair together with their very different looking
-plumage, but it is clear that really love each other.""",
+plumage, but it is clear that they really love each other.""",
 'bridge':"""The bridges here are lovely arched structures but small, just enough
 for a single person to pass over. One of them is covered to the east and the
 other one goes to the rest of the garden to the northeast.""",
@@ -724,7 +726,7 @@ is partial and not broad" 2:14 (s)"
 """}
 confuciuseight.add_phrase("read sign",read_sign)
 confuciuseight.add_phrase("read scroll",read_scroll)
-confuciuseight.add_phrase("take exam",Say("You sit down to take the exam with the other\nstudents but quickly realize you have a clue how to answer all these questions!"))
+confuciuseight.add_phrase("take exam",Say("You sit down to take the exam with the other\nstudents but quickly realize you haven't a clue how to answer all these questions!"))
 
 # ######################################################
 # ## Location: Kongzi 9 School Hall
@@ -735,7 +737,7 @@ confuciusnine = game.new_location(
 """This large hall contains a group of students sitting on the floor. The
 students appear to be reciting some old text together to practice it. The
 teacher at the front is listening attentively and occasionally stops them to
-comment on the meaning of a phrase and reflect on principals. There is a sign
+comment on the meaning of a phrase and reflect on principles. There is a sign
 here and a scroll hanging on the wall.
 """, "in")
 confuciusnine.descriptions = {'sign':"""
@@ -761,7 +763,7 @@ confuciusnine.add_phrase("read scroll",read_scroll)
 # ######################################################
 
 confuciusten = game.new_location(
-"Hall of Kongzi - Ancestral Shrine ",
+"Hall of Kongzi - Ancestral Shrine",
 """This is an ancestral shrine. There is some incense burning here and a series
 of tablets representing various ancestors, with their names carved on them. You see a sign here, and also a rock with a carving on it. There is a door to the north and an archway to the west.
 """, "in")
@@ -829,7 +831,7 @@ The sign says:
 person, it will always first subject one's heart and resolution to
 bitterness, belabor one's muscles and bones, starve one's body and flesh,
 deprive one's person, and thwart and bring chaos to what one does. By means
-of these things it perturbs one's heart, thoughens one's nature, and
+of these things it perturbs one's heart, toughens one's nature, and
 provides those things of which one is incapable. One must often make
 mistakes, and only then can one improve. One must be troubled in one's
 heart and vexed in one's deliberations, and only then rise up. These things
@@ -862,7 +864,7 @@ def fix_cart(game,thing):
     return True
   if "wheel" in game.player.inventory:
     game.player.location.set_flag('fixed')
-    game.output("Your wheel fits perfectly on the new cart and you attach it easily.",DESCRIPTION)
+    game.output("Your wheel fits perfectly on the old cart and you attach it easily.",DESCRIPTION)
     game.output("""The Farmer from Song says:
 Thank you so much for fixing my cart. I'm pretty useless at this farming
 business. Just the other day Mengzi reprimanded me after my crops withered
@@ -949,7 +951,7 @@ But doesn't it distinguish between upward and downward? Human nature being
 good is like water tending downward. There is not human who does not tend
 toward goodness. There is no water that does not tend downward. Now, by
 striking water and making it leap up, you can cause it to go past your
-forehead. If you guid it by damming it, you can cause it to remain on a
+forehead. If you guide it by damming it, you can cause it to remain on a
 mountaintop. But is this the nature of water? It is only that way because
 of the circumstances. When humans are cause to not be good, it is only
 because their nature is the same way. 6A2.1 (p)"
@@ -995,7 +997,7 @@ menciusfive.add_phrase("read scroll",read_scroll)
 # ######################################################
 
 menciussix = game.new_location(
-"Hall of Mengzi - Basement ",
+"Hall of Mengzi - Basement",
 """You are in a dark basement, lit only by some light from the stairs leading up.
 You can make out a sign here, and a scroll hanging on the wall by the stairs.
 Beyond in the basement it looks like there are various things in storage here,
@@ -1045,6 +1047,7 @@ Virtue, they are pleased in their hearts and genuinely submit, like the
 seventy disciples who served Kongzi. 2A3.2 (n)"
 """}
 menciusseven.add_phrase("read sign",read_sign)
+menciusseven.add_phrase("read scroll",read_scroll)
 
 # ######################################################
 # ## Location: Mengzi 8 Mountain Path
@@ -1120,7 +1123,7 @@ zhuangzione.add_phrase("swim",swim_river)
 # ######################################################
 
 zhuangzitwo = game.new_location(
-"Hall of Zhuangzi - The Stone Bridge ",
+"Hall of Zhuangzi - The Stone Bridge",
 """You stand on a large stone bridge over the river. Lots of small fish
 can be seen in the fast flowing river down below. On the side in  the
 center of the bridge is a sign. There is also a man here leaning on the
@@ -1207,7 +1210,7 @@ slippery and looks like it would be dangerous to jump down or climb down the
 well. There is a round pole across the well and a rope is tied onto it, hanging
 down into the well."""
   game.player.location.set_flag('roped')
-  game.output("""You tie the rope to the wooden poll that stretches across the well
+  game.output("""You tie the rope to the wooden pole that stretches across the well
 and secure it well. It should now be safe to climb down the well.""", FEEDBACK)
 
 
@@ -1237,7 +1240,7 @@ and safely down the shaft of the well.""",FEEDBACK)
 
 def meditate(game,thing):
   if game.player.health<16:
-       game.player.health+=3
+       game.player.health=min(game.player.health+3,16)
        game.output("\nYou sit in stillness and find your center. You pass an hour in silence and let go of the world. \nYou feel refreshed and your health is now: ",FEEDBACK)
        game.output(str(game.player.health)+"\n",CONTENTS)
   else:
@@ -1281,6 +1284,8 @@ zhuangzifour.add_phrase("jump into well",enter_well)
 zhuangzifour.add_phrase("jump well",enter_well)
 zhuangzifour.add_phrase("down",enter_well)
 zhuangzifour.add_phrase("d",enter_well)
+zhuangzifour.add_phrase("go down",enter_well)
+zhuangzifour.add_phrase("go d",enter_well)
 zhuangzifour.add_phrase("climb well",enter_well)
 zhuangzifour.add_phrase("climb down well",enter_well)
 zhuangzifour.add_phrase("enter well",enter_well)
@@ -1296,7 +1301,7 @@ zhuangzifour.add_phrase("use rope",attach_rope)
 # ######################################################
 
 zhuangzifive = game.new_location(
-"Hall of Zhuangzi - The Pond ",
+"Hall of Zhuangzi - The Pond",
 """This is a quiet misty place. There is almost no sound to be heard other
 than the rustling of some bushes in the wind, and the occasional sound of a
 small creature or two in a pond here. There is a stone here with a carving on
@@ -1348,7 +1353,7 @@ zhuangzisix.add_phrase("read sign",read_sign)
 # ######################################################
 
 zhuangziseven = game.new_location(
-"Hall of Zhuangzi - Waterfalls ",
+"Hall of Zhuangzi - Waterfalls",
 """You are standing in front of a beautiful waterfall. In front of the waterfall
 you can see thousands of butterflies flapping about and visiting the many flowers
 that grow along the edge of the water here. You see a sign here and a stone with
@@ -1381,7 +1386,7 @@ zhuangziseven.add_phrase('swim',Say("You take a refreshing swim in front of the 
 # ######################################################
 
 zhuangzieight = game.new_location(
-"Hall of Zhuangzi - The Useless Tree in the Glade ",
+"Hall of Zhuangzi - The Useless Tree in the Glade",
 """You are standing in a glade where the sunlight streams down onto a grassy
 patch in the middle of the forest. Here you see a massive gnarled tree, a maze of
 convoluted branches with a strangely shaped trunk. Next to the tree there is a
@@ -1402,7 +1407,7 @@ could entrap or afflict it? 1.14 (o)"
 'tree':"A massive gnarled tree, a maze of convoluted branches with a strangely shaped trunk.",
 'carving':"""The carving reads:
 "Carpenter Shi was traveling in Qi when he came upon the tree of the shrine
-at the Qu Yuan bend. Itw as over a hundred arms spans round, so large that
+at the Qu Yuan bend. It was over a hundred arms spans round, so large that
 thousands of oxen could shade themselves beneath it. It overstretched the
 surrounding hills, its lowest branches hundreds of feet from the ground, at
 least a dozen of which could have been hollowed out to make into ships. It
@@ -1437,7 +1442,7 @@ zhuangzieight.add_phrase("take a nap",Say("You take a relaxing nap in the shade 
 # ######################################################
 
 well  = game.new_location(
-"Hall of Zhuangzi - Well ",
+"Hall of Zhuangzi - Well",
 """You find yourself at the bottom of a deep well covered in some mud but not
 much water. Here you see a small frog just hanging out. Looking closely at the
 sides of the well you can see small handles on the wall of the well that will
@@ -1479,7 +1484,7 @@ def pass_statue(game,thing):
   """Gives the player 1-5 damage for trying to pass the guardian"""
   if game.player.location.flag('guarded'):
     game.output("""
-As you try to walk passed the guardian and approach the archway,
+As you try to walk past the guardian and approach the archway,
 the statue suddenly swings its antlers down and slashes at you.
 The sharp antlers cut through your clothes and deep into your skin.""",FEEDBACK)
     damage=random.randint(1,5)
@@ -1509,6 +1514,8 @@ guardroom.descriptions = {'archway': 'This open archway is the entrance to the m
 
 guardroom.add_phrase("north",pass_statue)
 guardroom.add_phrase("n",pass_statue)
+guardroom.add_phrase("go north",pass_statue)
+guardroom.add_phrase("go n",pass_statue)
 
 
 # ######################################################
@@ -1521,7 +1528,7 @@ def eat_soup(game,thing):
     game.output("That soup looks great, but piping hot. A bowl would be helpful here.")
     return True
   if game.player.health<16:
-     game.player.health+=5
+     game.player.health=min(game.player.health+5,16)
      game.output("\nThe soup is not only delicious but has a healing effect. \nYour health has increased and is now: ",FEEDBACK)
      game.output(str(game.player.health)+"\n",CONTENTS)
   else:
@@ -1540,7 +1547,7 @@ It will make a smoothie that remembers how many kinds of berries it has, since t
     game.output("To make a smoothie you need to be carrying some fruit or berries.",FEEDBACK)
     return True
   else:
-    if not "cup" in game.player.inventory or "glass" in game.player.inventory:
+    if not ("cup" in game.player.inventory or "glass" in game.player.inventory):
       game.output("""To make a smoothie you need to be carrying some kind
 of vessel to carry the smoothie in once it has been blended.""",FEEDBACK)
       return True
@@ -1550,7 +1557,7 @@ of vessel to carry the smoothie in once it has been blended.""",FEEDBACK)
     if "cup" in game.player.inventory:
       game.player.remove_from_inventory(cup)
     else:
-      game.player.remove_from_inventory(glass)
+      game.player.remove_from_inventory(emptyglass)
     if "blueberries" in game.player.inventory: game.player.remove_from_inventory(blueberries)
     if "strawberries" in game.player.inventory: game.player.remove_from_inventory(strawberries)
     if "raspberries" in game.player.inventory: game.player.remove_from_inventory(raspberries)
@@ -1566,7 +1573,7 @@ As soon as you enter the room you smell a delightful array of aromas coming
 from a pot over the fire. Some vegetables are cut up on a long table and
 there is a blender there as well. Finally you see how the people of the
 hall are fed. There is a man standing near them tending to the food.
-You see a doors to the south, west, east, and north.""", "in")
+You see doors to the south, west, east, and north.""", "in")
 kitchen.descriptions = {'blender': 'This electric blender looks like it would be great to make smoothies with if you had some fruit or berries.',
     'vegetables': 'A healthy array of vegetables.',
     'pot': 'Looks like some kind of soup being made here, which looks fantastic.',
@@ -1915,7 +1922,7 @@ like you are pulled along with the bow. You are transported to a new place!""",F
       game.output("Your arrow drops to the ground, but now begins to glow faintly!",CONTENTS)
       game.player.remove_from_inventory(arrow)
       game.player.location.add_object(greatarrow)
-      game.output("There is an glowing arrow here!",CONTENTS)
+      game.output("There is a glowing arrow here!",CONTENTS)
     elif hitlocation < 0.25:
       game.output("Oooh, sooo close! You almost hit the middle of the target!",FEEDBACK)
       time.sleep(0.15)
@@ -1979,7 +1986,7 @@ the piping of Heaven""",
 """Human interactions, when handled face-to-face,
 are founded on mutual trust. But when handled at a distance, they must depend
 on words to establish reciprocal loyalty. These words have to be transmitted
-by someone, and there is nothing in the world more difficulty than
+by someone, and there is nothing in the world more difficult than
 communicating mutual esteem or mutual anger between two people. The esteem
 gets exaggerated into flattery and the anger into insult. These exaggerations
 then become outright lies, and once the lying starts trustworthiness is lost,
@@ -1992,7 +1999,7 @@ it, trying to demonstrate it to one another. Thus I say that demonstration by
 debate always leaves something unseen.""",
 """Human speech is not just a blowing of air.
 Speech has something of which it speaks, something it refers to. Yes, but
-what it refers to is pecurliarly unfixed.""",
+what it refers to is peculiarly unfixed.""",
 """To use this horse to show that a horse is not a horse
 is no match for using not-this-horse to show that a horse is not a horse.
 Heaven and earth are one finger. All things are one horse.""",
@@ -2059,10 +2066,10 @@ laozi.set_allowed_locations([laozione,laozitwo,laozithree,laozifour,laozifive,la
 # #####################################
 
 mengzi = Animal("Mengzi")
-mengzi.description = """Looks like a man dressed in Ying style robes. He has a plaster on his nose."""
+mengzi.description = """An earnest looking scholar in long robes, who seems eager to persuade anyone he meets."""
 mengzi.talkativeness = 0.6
-mengzi.add_phrase("look at man",Say(mengzi.description))
-mengzi.add_phrase("look man",Say(mengzi.description))
+mengzi.add_phrase("look at Mengzi",Say(mengzi.description))
+mengzi.add_phrase("look Mengzi",Say(mengzi.description))
 mengzi.randomphrases = ["Mom is wandering around here somewhere.",
 """I hope Zhuangzi isn't using overly
 fine nets in his pond.""",
@@ -2090,7 +2097,7 @@ mengzi.set_allowed_locations([menciusone,menciustwo,menciusthree,menciusfour,men
 # #####################################
 
 kongzi = Animal("Kongzi")
-kongzi.description = """Looks like a man dressed in Ying style robes. He has a plaster on his nose."""
+kongzi.description = """A dignified old teacher in formal robes, who carries himself with great care and courtesy."""
 kongzi.talkativeness = 0.6
 kongzi.add_phrase("look at Kongzi",Say(kongzi.description))
 kongzi.add_phrase("look Kongzi",Say(kongzi.description))
@@ -2110,7 +2117,7 @@ whereas the petty person understands profit.""",
 I also wish not to do unto others.""",
 """Is Goodness really so far away?
 If I simply desire Goodness, I will find that it is already here.""",
-"""A gentlmean helps others to realize
+"""A gentleman helps others to realize
 their good qualities, rather than their bad.
 A petty person does the opposite.""",
 """Fan Chi asked me about Goodness,
@@ -2158,7 +2165,7 @@ my opinion, we settled down near a school. Though I'm not sure the school down
 south from here is turning out to be the kind of place Mengzi had in mind."""
 mom.add_phrase("talk mom",Say(reply))
 mom.add_phrase("kill mom",Say("She easily dodges your clumsy blows."))
-mom.add_phrase("attack man",Say("She easily dodges your clumsy blows."))
+mom.add_phrase("attack mom",Say("She easily dodges your clumsy blows."))
 mom.set_location(menciusone)
 mom.set_allowed_locations([menciusone,menciustwo,menciusthree,menciusfour,menciusfive,menciussix,menciusseven])
 
@@ -2167,8 +2174,8 @@ mom.set_allowed_locations([menciusone,menciustwo,menciusthree,menciusfour,menciu
 # #####################################
 
 mozi = Animal("Mozi")
-mozi.description = """You see a strong woman, with wise eyes and arms that
-look like they have years of weaving experience."""
+mozi.description = """A plainly dressed man in rough, practical clothes and straw sandals,
+who looks like he has walked a very long way."""
 mozi.talkativeness = 0.4
 mozi.add_phrase("look at Mozi",Say(mozi.description))
 mozi.add_phrase("look Mozi",Say(mozi.description))
@@ -2258,7 +2265,7 @@ huizi.set_allowed_locations([zhuangzitwo])
 # #####################################
 
 
-cook = Animal("man")
+cook = Animal("cook")
 cook.description = "A short-tempered looking man, dressed in Tang dynasty robes, busily rushing around the kitchen."
 cook.talkativeness = 0.6
 cook.randomphrases = ["""This kitchen is like the center of the universe, you
@@ -2273,13 +2280,17 @@ in the pot. He may not be able to see the fire, but he's gonna get cooked
 anyways. Zhuangzi said I was too pessimistic about life.""",
 """Kongzi said there is a joy to be had in plain food, but I sure see him
 hanging around here a lot when I make some delicious spicy curry."""]
+cook.add_phrase("look at cook",Say(cook.description))
+cook.add_phrase("look cook",Say(cook.description))
 cook.add_phrase("look at man",Say(cook.description))
 cook.add_phrase("look man",Say(cook.description))
 cook.set_location(kitchen)
 cook.set_allowed_locations([kitchen])
+cook.add_phrase("kill cook",Say("He easily dodges your clumsy blows."))
+cook.add_phrase("attack cook",Say("He easily dodges your clumsy blows."))
 cook.add_phrase("kill man",Say("He easily dodges your clumsy blows."))
 cook.add_phrase("attack man",Say("He easily dodges your clumsy blows."))
-cook.add_phrase("talk man",Say("""
+reply = Say("""
 "Hello there, I am the one and only Meng Shen, the master cook. My food
 is the best medicine for an ailing body.
 
@@ -2294,7 +2305,9 @@ suffering here. And yet, for some reason, I still get no help from Mengzi!"
 
 He goes back to work.
 
-"""))
+""")
+cook.add_phrase("talk cook",reply)
+cook.add_phrase("talk man",reply)
 
 # #####################################
 # Actor - Historian Ban Zhao
@@ -2443,7 +2456,7 @@ frog.set_location(well)
 frog.set_allowed_locations([well])
 frog.add_phrase("kill frog",Say("It just bounces out of your way."))
 frog.add_phrase("attack frog",Say("It just bounces out of your way."))
-frog.add_phrase("talk tortoise",Say("""The frog says: Hello there. Thanks for not dying on the way down. I get a bit tired dodging the idiots who jump down
+frog.add_phrase("talk frog",Say("""The frog says: Hello there. Thanks for not dying on the way down. I get a bit tired dodging the idiots who jump down
 here, not to mention the clean up afterwards. If you are headed to the machine
 room, I hope you brought a gift for the guardian?
 """))
@@ -2501,8 +2514,9 @@ def monkey_feed(game,thing):
   """Feeds the monkey fruit from the player's inventory
 
 If the player has a peach or a kind of berries they can feed the monkey. The monkey will then drop the stolen item in the room."""
-  if not monkey.flag('stolen') or monkey.flag('fed'):
+  if not monkey.flag('stolen'):
     game.output("The monkey doesn't seem very hungry.")
+    return True
   else:
     # The monkey has stolen something and hasn't been fed
     if "peach" in game.player.inventory:
@@ -2511,6 +2525,8 @@ If the player has a peach or a kind of berries they can feed the monkey. The mon
       givenobject=game.player.inventory.pop('strawberries', None)
     elif "blueberries" in game.player.inventory:
       givenobject=game.player.inventory.pop('blueberries', None)
+    elif "raspberries" in game.player.inventory:
+      givenobject=game.player.inventory.pop('raspberries', None)
     else:
       game.output("The monkey doesn't seem interested in that object. Maybe some fruit?")
       return True
@@ -2548,8 +2564,8 @@ monkey.add_phrase("give berries to monkey",monkey_feed)
 monkey.add_phrase("give berries monkey",monkey_feed)
 monkey.add_phrase("give peach monkey",monkey_feed)
 monkey.add_phrase("give peach monkey",monkey_feed)
-monkey.add_phrase("kill monkey",Say("The monkey laughs, 'Haha, catch me if you can!"))
-monkey.add_phrase("attack monkey",Say("The monkey laughs, 'Haha, carch me if you can!'"))
+monkey.add_phrase("kill monkey",Say("The monkey laughs, 'Haha, catch me if you can!'"))
+monkey.add_phrase("attack monkey",Say("The monkey laughs, 'Haha, catch me if you can!'"))
 
 # #####################################
 # Actor - Custodian
@@ -2609,8 +2625,8 @@ Maybe it's the smell?""",
 'Do not impose upon others what you yourself do not desire.' I wonder if these
 mean the same thing?"""]
 jesus.set_location(laozitwo)
-jesus.add_phrase("look at jesus",Say(monkey.description))
-jesus.add_phrase("look jesus",Say(monkey.description))
+jesus.add_phrase("look at jesus",Say(jesus.description))
+jesus.add_phrase("look jesus",Say(jesus.description))
 reply = """Jesus smiles at you and says, "You know these
 Daoists make a lot of sense and we seem to agree
 on quite a bit, but I've been trying out some new
@@ -2690,7 +2706,7 @@ tombdemon.add_phrase("give demon smoothie",give_smoothie)
 tombdemon.add_phrase("give statue smoothie",give_smoothie)
 tombdemon.add_phrase("give tomb demon smoothie",give_smoothie)
 tombdemon.add_phrase("give guardian smoothie",give_smoothie)
-tombdemon.add_phrase("look at demon",Say(monkey.description))
+tombdemon.add_phrase("look at demon",Say(tombdemon.description))
 tombdemon.add_phrase("look at tomb demon",Say(tombdemon.description))
 tombdemon.add_phrase("look tomb demon",Say(tombdemon.description))
 tombdemon.add_phrase("look demon",Say(tombdemon.description))
