@@ -3,14 +3,11 @@
 #
 # vim: et sw=2 ts=2 sts=2
 
-# for Python3, use:
-# import urllib.request as urllib2
-# import urllib2
-
 import random
 import string
-# import textwrap
+import textwrap
 import time
+import urllib.request as urllib2
 
 # "directions" are all the ways you can describe going some way;
 # they are code-visible names for directions for adventure authors
@@ -542,7 +539,7 @@ class Game(Base):
     if self.http_output:
       self.http_text += self.style_text(text, message_type) + "\n"
     else:
-      print self.style_text(text, message_type)
+      print(self.style_text(text, message_type))
 
   # checks to see if the inventory in the items list is in the user's inventory
   def inventory_contains(self, items):
@@ -633,7 +630,7 @@ class Game(Base):
         # get input from the user
         try:
           self.output("")  # add a blank line
-          user_input = raw_input("> ")
+          user_input = input("> ")
         except EOFError:
           return False
 
@@ -676,9 +673,9 @@ class Game(Base):
     if words[0].lower() == 'tell' and len(words) > 2:
       (target_name, words) = get_noun(words[1:], actor.location.actors.values())
 
-    things = actor.inventory.values() + \
-      actor.location.contents.values() + \
-      actor.location.exits.values() + \
+    things = list(actor.inventory.values()) + \
+      list(actor.location.contents.values()) + \
+      list(actor.location.exits.values()) + \
       list(actor.location.actors.values()) + \
       [actor.location] + \
       [actor]
@@ -741,7 +738,7 @@ class Game(Base):
     # e.g. "hit cat with hammer" -> hammer.hit(actor, 'cat', [])
     if indirect:
       # try inventory and room contents
-      things = actor.inventory.values() + actor.location.contents.values()
+      things = list(actor.inventory.values()) + list(actor.location.contents.values())
       for thing in things:
         if indirect == thing.name:
           v = thing.get_verb(verb)
@@ -1096,7 +1093,7 @@ class Location(Lockable):
 
   def debug(self):
     for key in self.exits:
-      print "exit: %s" % key
+      print("exit: %s" % key)
 
 
 # A "connection" connects point A to point B. Connections are
@@ -1361,7 +1358,7 @@ class Actor(Base):
     return True
 
   def act_list_verbs(self, actor, noun, words):
-    things = (actor.inventory.values() + actor.location.contents.values() +
+    things = (list(actor.inventory.values()) + list(actor.location.contents.values()) +
        list(actor.location.actors.values()) + [actor.location] + [actor])
     result = set()
     for t in things:
@@ -1449,7 +1446,7 @@ class Script(Base):
   def start_checking(self):
     assert self.running
     assert not self.recording
-    print "check_responses on"
+    print("check_responses on")
     self.check_responses = True
     self.current_response = ""
 
@@ -1542,10 +1539,10 @@ class Script(Base):
   def print_script(self):
     i = 0
     for command in self.commands:
-      print "> " + command
+      print("> " + command)
       if command == "end":
         break
-      print self.responses[i]
+      print(self.responses[i])
       i = i + 1
 
   def save_file(self):
@@ -1635,11 +1632,10 @@ class Robot(Actor):
 
   def act_run_script(self, actor, noun, words):
     if self.current_script:
-      print "You must stop \"%s\" first." % (self.current_script.name)
+      print("You must stop \"%s\" first." % (self.current_script.name))
     script_name = self.parse_script_name(noun)
     if not script_name in self.scripts:
-      print "%s can't find script \"%s\" in its memory." % (self.name,
-                                                            script_name)
+      print("%s can't find script \"%s\" in its memory." % (self.name, script_name))
 
       return True;
 
@@ -1660,30 +1656,28 @@ class Robot(Actor):
   def act_print_script(self, actor, noun, words):
     script_name = self.parse_script_name(noun)
     if not script_name in self.scripts:
-      print "%s can't find script \"%s\" in its memory." % (self.name,
-                                                              script_name)
+      print("%s can't find script \"%s\" in its memory." % (self.name, script_name))
       return True
 
-    print "----------------------8<-------------------------\n"
-    print "# Paste the following into your game code in order"
-    print "# to be able to run this script in the game:"
-    print "%s_script = Script(\"%s\"," % (script_name, script_name)
-    print "\"\"\""
+    print("----------------------8<-------------------------\n")
+    print("# Paste the following into your game code in order")
+    print("# to be able to run this script in the game:")
+    print("%s_script = Script(\"%s\"," % (script_name, script_name))
+    print("\"\"\"")
     self.scripts[script_name].print_script()
-    print "\"\"\")"
-    print "\n# Then add the script to a player, or a robot"
-    print "# with code like the following:"
-    print "player.add_script(%s_script)" % script_name
-    print "\n# Now you can run the script from within the game"
-    print "# by typing \"run %s\"" % script_name
-    print "\n---------------------->8-------------------------"
+    print("\"\"\")")
+    print("\n# Then add the script to a player, or a robot")
+    print("# with code like the following:")
+    print("player.add_script(%s_script)" % script_name)
+    print("\n# Now you can run the script from within the game")
+    print("# by typing \"run %s\"" % script_name)
+    print("\n---------------------->8-------------------------")
     return True
 
   def act_save_file(self, actor, noun, words):
     script_name = self.parse_script_name(noun)
     if not script_name in self.scripts:
-      print "%s can't find script \"%s\" in its memory." % (self.name,
-                                                            script_name)
+      print("%s can't find script \"%s\" in its memory." % (self.name, script_name))
       return True
     self.scripts[script_name].save_file()
     return True
@@ -1705,7 +1699,7 @@ class Robot(Actor):
           self.script_think_time = t
           return True
 
-    print "\"think\" requires a number of seconds (0.0000-60.0000) as an argument"
+    print("\"think\" requires a number of seconds (0.0000-60.0000) as an argument")
     return True
 
   def get_next_script_command(self):
@@ -1713,23 +1707,20 @@ class Robot(Actor):
       return None
     line = self.current_script.get_next_command()
     if not line:
-      print "%s %s done running script \"%s\"." % (self.name,
-                                                   self.isare,
-                                                   self.current_script.name)
+      print("%s %s done running script \"%s\"." % (self.name, self.isare, self.current_script.name))
       self.current_script = None
       return None
     if self.script_think_time > 0:
       time.sleep(self.script_think_time)
     line = self.name + ": " + line
-    print "> %s" % line
+    print("> %s" % line)
     return line
 
   def set_next_script_command(self, command):
     if not self.current_script:
       return True
     if not self.current_script.set_next_command(command):
-      print "%s finished recording script \"%s\"." % (self.name,
-                                                      self.current_script.name)
+      print("%s finished recording script \"%s\"." % (self.name, self.current_script.name))
       self.current_script = None
       return False
     return True
@@ -1889,7 +1880,7 @@ class Share(object):
       return None
     k = self.key_fns[domain](key)
     net_f = self.opener.open('http://%s:%s/%s/%s.raw' % (self.hostname, self.port, cmd, k))
-    v = net_f.read().split('\n')
+    v = net_f.read().decode('utf-8').split('\n')
     if len(v) > 1:
        return v[1].strip()
     return None
@@ -1900,7 +1891,7 @@ class Share(object):
       return None
     k = self.key_fns[domain](key)
     net_f = self.opener.open('http://%s:%s/%s/%s/%s.raw' % (self.hostname, self.port, cmd, k, arg1))
-    v = net_f.read().split('\n')
+    v = net_f.read().decode('utf-8').split('\n')
     if len(v) > 1:
        return v[1]  # should be ""
     return None
@@ -1911,7 +1902,7 @@ class Share(object):
       return None
     k = self.key_fns[domain](key)
     net_f = self.opener.open('http://%s:%s/%s/%s/%s/%s.raw' % (self.hostname, self.port, cmd, k, arg1, arg2))
-    v = net_f.read().split('\n')
+    v = net_f.read().decode('utf-8').split('\n')
     if len(v) > 1:
        return v[1]  # should be ""
     return None
@@ -1923,7 +1914,7 @@ class Share(object):
       return []
     k = self.key_fns[domain](key)
     net_f = self.opener.open('http://%s:%s/%s/%s/%s/%s.raw' % (self.hostname, self.port, cmd, k, arg1, arg2))
-    v = net_f.read().split('\n')
+    v = net_f.read().decode('utf-8').split('\n')
     return v
 
   # return a list
@@ -1933,7 +1924,7 @@ class Share(object):
       return []
     k = self.key_fns[domain](key)
     net_f = self.opener.open('http://%s:%s/%s/%s/%s/%s/%s.raw' % (self.hostname, self.port, cmd, k, arg1, arg2, arg3))
-    v = net_f.read().split('\n')
+    v = net_f.read().decode('utf-8').split('\n')
     return v
 
   def delete(self, domain, key):
@@ -1970,7 +1961,7 @@ class Share(object):
     v = self._do2l(domain, "ZREVRANGE", key, "0", rank)
     v = [x.strip() for x in v[1:]]
     result = []
-    for x in xrange(0, len(v)):
+    for x in range(0, len(v)):
       if x % 2 == 1:
         result.append(v[x])
     return result
@@ -1979,7 +1970,7 @@ class Share(object):
     v = self._do3l(domain, "ZREVRANGE", key, "0", rank, "WITHSCORES")
     v = [x.strip() for x in v[1:]]
     result = []
-    for x in xrange(0, len(v)):
+    for x in range(0, len(v)):
       if x % 4 == 1:
         p = [v[x]]
       elif x % 4 == 3:

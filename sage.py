@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # vim: et sw=2 ts=2 sts=2
 
@@ -1636,9 +1636,9 @@ The dials currently have the following settings:
 """)
   for x in ['dial1','dial2','dial3','dial4','dial5','dial6','dial7','dial8','dial9','dial10','dial11','dial12','dial13','dial14','dial15']:
     if theroom.var(x):
-      print x+':'+theroom.var(x)
+      print(x+':'+theroom.var(x))
     else:
-      print x+':a'
+      print(x+':a')
 
 
 def turn_dial(self,actor,noun,words):
@@ -1646,22 +1646,22 @@ def turn_dial(self,actor,noun,words):
   words=' '.join(words).replace("to ","")
   diallist=['dial1','dial2','dial3','dial4','dial5','dial6','dial7','dial8','dial9','dial10','dial11','dial12','dial13','dial14','dial15']
   if noun not in diallist:
-    print 'If you wish to turn a dial, you must identify it, e.g. turn dial1 to t or turn dial10 to f'
+    print('If you wish to turn a dial, you must identify it, e.g. turn dial1 to t or turn dial10 to f')
     return True
   else:
     if len(words)>1:
-      print 'Too many characters. You can turn the dial to any single letter from a to z, e.g. turn dial1 to f or turn dial7 to z'
+      print('Too many characters. You can turn the dial to any single letter from a to z, e.g. turn dial1 to f or turn dial7 to z')
       return True
     elif len(words)<1:
-      print 'What do you want to turn the dial to? Any letter from a to z, e.g. turn dial2 to t'
+      print('What do you want to turn the dial to? Any letter from a to z, e.g. turn dial2 to t')
       return True
     else:
       if words in 'abcdefghijklmnopqrstuvwxyz':
         self.set_var(noun,words)
-        print noun.title()+' has been turned to: '+self.var(noun)
+        print(noun.title()+' has been turned to: '+self.var(noun))
         return True
       else:
-        print 'The dial contains only the letters from a to z'
+        print('The dial contains only the letters from a to z')
         return True
 
 machineroom = game.new_location(
@@ -2485,7 +2485,7 @@ If a random event is triggered the monkey will select a random item from the pla
     chancestolen=0.05 # lower it if something is already stolen
   if random.random() < chancestolen: # 1 in 2 chance of something getting stolen
     if len(game.player.inventory)>0: # They are carrying something
-      targetobject = random.choice(game.player.inventory.keys())
+      targetobject = random.choice(list(game.player.inventory.keys()))
       game.player.location.add_object(game.player.remove_from_inventory(game.player.inventory[targetobject]))
       monkey.act_take1(monkey,targetobject,True)
       time.sleep(0.2)
