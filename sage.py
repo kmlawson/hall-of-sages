@@ -878,7 +878,7 @@ In thanks for your fixing this cart, let me give you some of my rope.
 Perhaps it will help you?
 """,FEEDBACK)
     game.output("The man gives you some rope.",CONTENTS)
-    newrope = game.player.location.add_object(Object("rope","a long piece of rope."))
+    game.player.location.add_object(rope)
     game.player.act_take1(game.player,'rope',True)
     game.player.remove_from_inventory(wheel)
   else:
@@ -1197,18 +1197,26 @@ zhuangzithree.add_phrase("look rock",read_carving)
 # ## Location: Zhuangzi 4 - Meditation Hall
 # ######################################################
 
+well_description = """The well is quite small but looks very deep. You can just make out
+something moving at the bottom. The well is so small the huge turtle wouldn't be
+able to fit down it though a human being probably could. The sides look very
+slippery and looks like it would be dangerous to jump down or climb down the
+well. There is a round pole across the well that something could be tied to."""
+
+roped_well_description = """The well is quite small but looks very deep. You can just make out
+something moving at the bottom. The well is so small the huge turtle wouldn't be
+able to fit down it though a human being probably could. The sides look very
+slippery and looks like it would be dangerous to jump down or climb down the
+well. There is a round pole across the well and a rope is tied onto it, hanging
+down into the well."""
+
 def attach_rope(game,thing):
   """Attaches rope to the well and flags it for safe descent"""
   if not "rope" in game.player.inventory:
     game.output("You don't have any rope in your inventory. Sure would be useful.")
     return True
   game.player.remove_from_inventory(game.player.inventory['rope'])
-  game.player.location.descriptions['well']="""The well is quite small but looks very deep. You can just make out
-something moving at the bottom. The well is so small the huge turtle wouldn't be
-able to fit down it though a human being probably could. The sides look very
-slippery and looks like it would be dangerous to jump down or climb down the
-well. There is a round pole across the well and a rope is tied onto it, hanging
-down into the well."""
+  game.player.location.descriptions['well']=roped_well_description
   game.player.location.set_flag('roped')
   game.output("""You tie the rope to the wooden pole that stretches across the well
 and secure it well. It should now be safe to climb down the well.""", FEEDBACK)
@@ -1263,11 +1271,7 @@ balanced and untilting. Balanced and untilting, you are unborn along with
 each presence that confronts you. With such rebirth, you have done about
 all that can be done. (d)"
 """,
-'well':"""The well is quite small but looks very deep. You can just make out
-something moving at the bottom. The well is so small the huge turtle wouldn't be
-able to fit down it though a human being probably could. The sides look very
-slippery and looks like it would be dangerous to jump down or climb down the
-well. There is a round pole across the well that something could be tied to.""",
+'well':well_description,
 'scroll':"""The scroll reads:
 "The long is not excessive and the short is not deficient. The duck's neck
 may be short but lengthening it would surely vex him; the swan's neck may
@@ -1802,7 +1806,8 @@ inventory, health, examine (objects in your inventory), look (at things around
 you: use single words), read, take, drop, attack, pet, talk, feed, fix, pick,
 turn, give, swim, use, and so on. In general, leave out prepositions whenever
 possible. Use 'hint' to get some tips and hints. Use 'about' to learn more about
-this game. Use 'q' or 'quit' to exit the game.
+this game. Use 'save' to get a save code you can write down, and 'load' followed
+by that code to carry on later. Use 'q' or 'quit' to exit the game.
 """,DESCRIPTION)
 
 def show_about(self,actor):
@@ -1853,6 +1858,7 @@ brush = confuciussix.add_object(Object("brush","a simple writing brush."))
 ink = confuciussix.add_object(Object("ink bottle","a bottle of writing ink."))
 paper = confuciussix.add_object(Object("paper","a simple piece of writing paper."))
 arrow = menciusseven.add_object(Object("arrow","a sharp arrow."))
+rope = Object("rope","a long piece of rope.")
 greatarrow = Object("glowing arrow","an arrow that has a faint glow to it.")
 key = confuciussix.add_object(Object("key","a small iron key."))
 chest = menciustwo.add_object(Container("chest", "a long thin chest"))
@@ -2735,6 +2741,57 @@ game.add_actor(kongzi)
 game.add_actor(zhuangzi)
 game.add_actor(laozi)
 game.add_actor(mom)
+
+# #####################################
+# Saving and Loading
+# #####################################
+
+# Everything that changes during play is listed here. Only add new entries to
+# the end of these lists, and bump the version whenever you add or remove
+# locations, actors, or entries, so that old save codes are rejected cleanly.
+
+def restore_well(game):
+  """Matches the well description to whether the rope is tied on"""
+  if zhuangzifour.flag('roped'):
+    zhuangzifour.descriptions['well']=roped_well_description
+  else:
+    zhuangzifour.descriptions['well']=well_description
+
+savecode = SaveCode(game, 1,
+  objects=[blueberries, raspberries, strawberries, peach, feather, emptyglass,
+           wheel, cup, claybowl, book, brush, ink, paper, arrow, greatarrow,
+           key, bow, rope, smoothie, smoothie.replacement],
+  containers=[chest],
+  flags=[(menciusthree,'fixed'), (zhuangzifour,'roped'), (guardroom,'guarded'),
+         (chest,'locked'), (chest,'closed'), (monkey,'fed'), (monkey,'stolen')],
+  variables=[(machineroom,'dial'+str(n),list('abcdefghijklmnopqrstuvwxyz')) for n in range(1,16)] +
+            [(smoothie,'berrycount',[0,1,2,3,4])],
+  actors=[monkey],
+  after_load=restore_well)
+
+def save_game(self,actor,noun,words):
+  """Shows a save code that holds the player's progress"""
+  game.output("Write down this save code. To carry on later, type 'load' followed by the code:",FEEDBACK)
+  game.output("\n    "+savecode.encode()+"\n",CONTENTS)
+  return True
+
+def load_game(self,actor,noun,words):
+  """Restores the player's progress from a save code"""
+  code = ' '.join(game.last_command.split()[1:])
+  if not code:
+    game.output("Type 'load' followed by your save code, e.g. load 1A2B3-C4D5E-...",FEEDBACK)
+    return True
+  try:
+    savecode.load(code)
+  except SaveCodeError as error:
+    game.output(str(error),FEEDBACK)
+    return True
+  game.output("Your saved game has been loaded.",FEEDBACK)
+  return True
+
+hero.add_verb(Verb(save_game,'save'))
+hero.add_verb(Verb(load_game,'load'))
+hero.add_verb(Verb(load_game,'restore'))
 
 def say(self,actor, noun, words):
   if not words:

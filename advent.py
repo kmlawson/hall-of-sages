@@ -8,6 +8,7 @@ import string
 import textwrap
 import time
 import urllib.request as urllib2
+import zlib
 
 # "directions" are all the ways you can describe going some way;
 # they are code-visible names for directions for adventure authors
@@ -424,6 +425,7 @@ class Game(Base):
     self.http_output = False
     self.http_text = ""
     self.done = False
+    self.last_command = ""
 
   def set_name(self, name):
     self.name = name
@@ -653,6 +655,9 @@ class Game(Base):
     # now we're done with punctuation and other superfluous words like articles
     if not command[0:3]=='say': # don't remove articles if it is the say command
         command = normalize_input(command)
+
+    # keep the whole command for verbs that need every word, e.g. save codes
+    self.last_command = command
 
     # see if we want to quit
     if command == 'q' or command == 'quit':
@@ -1808,6 +1813,179 @@ class Pet(Robot, Animal):
       self.set_location(self.leader.location)
     else:
       self.random_move(observer_loc)
+
+
+# Save codes let a player write down their progress and type it back in
+# later. The whole game state is packed into the code itself, so no server
+# or save file is needed.
+#
+# Only what is listed when the SaveCode is created is saved: the player's
+# location and health, where each listed object is (a location, an actor's
+# inventory, a container, or nowhere), the listed flags and variables, and
+# the locations of the listed actors. Changing the game's locations, animals
+# or these lists changes the meaning of old codes, so bump the version when
+# you do; codes from another version are rejected instead of loading wrongly.
+
+SAVE_ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"  # Crockford base32: no I, L, O, U
+SAVE_GROUP_SIZE = 5
+
+class SaveCodeError(Exception):
+  pass
+
+def bits_needed(choices):
+  return max(1, (choices - 1).bit_length())
+
+class SaveCode(object):
+  VERSION_BITS = 5
+  CHECK_BITS = 15
+  HEALTH_CHOICES = 64
+
+  # objects: Objects (and Containers) whose whereabouts are saved
+  # containers: Containers that objects can be stored in
+  # flags: list of (thing, flag name)
+  # variables: list of (thing, variable name, list of every possible value)
+  # actors: actors whose location is saved
+  # after_load: function(game) called after a code is loaded
+  def __init__(self, game, version, objects, containers=[], flags=[],
+               variables=[], actors=[], after_load=None):
+    self.game = game
+    self.version = version
+    self.containers = list(containers)
+    self.objects = list(objects) + self.containers
+    self.flags = flags
+    self.variables = variables
+    self.actors = actors
+    self.after_load = after_load
+
+  # everywhere an object can be; index 0 means it is nowhere (eaten, used up)
+  def holders(self):
+    animals = [self.game.animals[name] for name in sorted(self.game.animals)]
+    return [None, self.game.player] + animals + self.containers + \
+      self.game.location_list
+
+  def contents_of(self, holder):
+    if isinstance(holder, Actor):
+      return holder.inventory
+    return holder.contents
+
+  # the number of choices for each saved value, in the order they are packed
+  def layout(self):
+    locations = len(self.game.location_list)
+    holders = len(self.holders())
+    return [locations, self.HEALTH_CHOICES] + \
+      [holders] * len(self.objects) + \
+      [2] * len(self.flags) + \
+      [len(choices) for (thing, name, choices) in self.variables] + \
+      [locations] * len(self.actors)
+
+  def checksum(self, number, bits):
+    data = number.to_bytes((bits + 7) // 8, 'big')
+    return zlib.crc32(data) & ((1 << self.CHECK_BITS) - 1)
+
+  def encode(self):
+    """Returns a save code describing the current game state"""
+    locations = self.game.location_list
+    holders = self.holders()
+    values = [locations.index(self.game.player.location),
+              min(max(self.game.player.health, 0), self.HEALTH_CHOICES - 1)]
+    for obj in self.objects:
+      where = 0
+      for (i, holder) in enumerate(holders):
+        if holder is not None and self.contents_of(holder).get(obj.name) is obj:
+          where = i
+          break
+      values.append(where)
+    for (thing, name) in self.flags:
+      values.append(1 if thing.flag(name) else 0)
+    for (thing, name, choices) in self.variables:
+      value = thing.var(name)
+      values.append(choices.index(value) if value in choices else 0)
+    for actor in self.actors:
+      values.append(locations.index(actor.location))
+
+    number = self.version
+    bits = self.VERSION_BITS
+    for (value, choices) in zip(values, self.layout()):
+      size = bits_needed(choices)
+      number = (number << size) | value
+      bits += size
+    number = (number << self.CHECK_BITS) | self.checksum(number, bits)
+    bits += self.CHECK_BITS
+
+    chars = []
+    for i in range((bits + 4) // 5):
+      chars.append(SAVE_ALPHABET[number & 31])
+      number >>= 5
+    code = "".join(reversed(chars))
+    return "-".join(code[i:i + SAVE_GROUP_SIZE]
+                    for i in range(0, len(code), SAVE_GROUP_SIZE))
+
+  def decode(self, code):
+    """Turns a save code back into a list of values, or raises SaveCodeError"""
+    # forgive spaces, dashes, lower case and look-alike letters
+    code = code.upper().replace("O", "0").replace("I", "1").replace("L", "1")
+    code = "".join(c for c in code if c.isalnum())
+    layout = self.layout()
+    sizes = [bits_needed(choices) for choices in layout]
+    bits = self.VERSION_BITS + sum(sizes) + self.CHECK_BITS
+    if len(code) != (bits + 4) // 5:
+      raise SaveCodeError("That save code is the wrong length. Check that you copied all of it.")
+    number = 0
+    for c in code:
+      if not c in SAVE_ALPHABET:
+        raise SaveCodeError("The save code contains a '%s', which never appears in save codes." % c)
+      number = (number << 5) | SAVE_ALPHABET.index(c)
+    check = number & ((1 << self.CHECK_BITS) - 1)
+    number >>= self.CHECK_BITS
+    if check != self.checksum(number, bits - self.CHECK_BITS):
+      raise SaveCodeError("That save code doesn't look right. Check it for mistakes and try again.")
+    values = []
+    for (size, choices) in reversed(list(zip(sizes, layout))):
+      value = number & ((1 << size) - 1)
+      number >>= size
+      if value >= choices:
+        raise SaveCodeError("That save code doesn't look right. Check it for mistakes and try again.")
+      values.insert(0, value)
+    if number != self.version:
+      raise SaveCodeError("That save code is from a different version of this game.")
+    return values
+
+  def load(self, code):
+    """Restores the game state from a save code, or raises SaveCodeError"""
+    values = self.decode(code)
+    locations = self.game.location_list
+    holders = self.holders()
+    player = self.game.player
+
+    player_location = locations[values.pop(0)]
+    player.health = values.pop(0)
+
+    # take every saved object out of wherever it is now, then put it back
+    for obj in self.objects:
+      for holder in holders[1:]:
+        contents = self.contents_of(holder)
+        if contents.get(obj.name) is obj:
+          del contents[obj.name]
+    for obj in self.objects:
+      holder = holders[values.pop(0)]
+      if holder is not None:
+        self.contents_of(holder)[obj.name] = obj
+
+    for (thing, name) in self.flags:
+      if values.pop(0):
+        thing.set_flag(name)
+      else:
+        thing.unset_flag(name)
+    for (thing, name, choices) in self.variables:
+      thing.set_var(name, choices[values.pop(0)])
+    for actor in self.actors:
+      actor.set_location(locations[values.pop(0)])
+
+    player.unset_flag('win')
+    player.set_location(player_location)
+    player_location.first_time = True
+    if self.after_load:
+      self.after_load(self.game)
 
 
 class Share(object):
